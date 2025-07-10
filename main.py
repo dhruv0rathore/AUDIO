@@ -1,6 +1,7 @@
 from src.book_parser import parse_book
 from src.pdf_parser import post_process_text, structure_into_sentences # We can move these later
 from src.emotion_classifier import classify_emotions
+from src.voice_synthesizer import synthesize_audio
 
 if __name__ == "__main__":
     print("Audiobook Director AI: System Online.")
@@ -19,7 +20,7 @@ if __name__ == "__main__":
     sentences = structure_into_sentences(processed_text)
 
     # Step 4: Classify emotions
-    classified_sentences = classify_emotions(sentences)
+    classified_sentences = classify_emotions(sentences[:20])
 
 
     # --- Verification Step ---
@@ -30,3 +31,7 @@ if __name__ == "__main__":
             print(f"  Sentence: \"{item['sentence']}\"")
             print(f"  Emotion: {item['emotion']} (Score: {item['score']:.2f})")
             print("-" * 20)
+
+
+    print("\n--- Starting Phase 3: Audio Synthesis ---")
+    synthesize_audio(classified_sentences, "output_audiobook.wav")

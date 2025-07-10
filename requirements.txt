@@ -1,4 +1,9 @@
 PyMuPDF
-nltk
 EbookLib
 beautifulsoup4
+nltk
+transformers
+datasets
+accelerate
+torch
+TTS
