@@ -11,38 +11,34 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print("Loading TTS model...")
 tts = TTS("tts_models/en/ljspeech/tacotron2-DDC").to(device)
 
-def synthesize_audio(classified_sentences: list[dict], output_filename: str = "final_audiobook.wav"):
-    """
-    Synthesizes audio from a list of sentences and saves it to a single file.
-    """
-    print(f"Starting audio synthesis for {len(classified_sentences)} sentences...")
-    temp_files = []
+def synthesize_multi_voice_audio(processed_data: list[dict], output_filename: str):
+    """Synthesizes audio using different voices for narration and dialogue."""
+    print(f"Starting multi-voice audio synthesis...")
+    
+    narrator_wav = "narrator_voice.wav"
+    character_wav = "character_voice.wav"
+    
+    if not os.path.exists(narrator_wav) or not os.path.exists(character_wav):
+        raise FileNotFoundError("Make sure 'narrator_voice.wav' and 'character_voice.wav' are uploaded to the session.")
 
-    # For now, we will generate all audio in the same voice.
-    # The next step would be to use the 'emotion' tag to change the speaker or style.
-    for i, item in enumerate(classified_sentences):
-        sentence = item['sentence']
+    final_audio = AudioSegment.empty()
+    for i, item in enumerate(processed_data):
         temp_filename = f"temp_chunk_{i}.wav"
+        
+        speaker_ref = narrator_wav if item['type'] == 'narration' else character_wav
+        print(f"  Chunk {i+1} ({item['type']}): Synthesizing...")
+            
+        tts_model.tts_to_file(
+            text=item['sentence'],
+            file_path=temp_filename,
+            speaker_wav=speaker_ref,
+            language="en"
+        )
+        
+        audio_chunk = AudioSegment.from_wav(temp_filename)
+        final_audio += audio_chunk
+        os.remove(temp_filename)
 
-        # Generate audio for the sentence and save to a temporary file
-        print(f"  Synthesizing chunk {i+1}/{len(classified_sentences)}...")
-        tts.tts_to_file(text=sentence, file_path=temp_filename)
-        temp_files.append(temp_filename)
-
-    # Stitch all the temporary audio files together
-    print("Stitching audio chunks into final audiobook...")
-    combined_audio = AudioSegment.empty()
-    for file in temp_files:
-        chunk = AudioSegment.from_wav(file)
-        combined_audio += chunk
-
-    # Export the final combined audio
-    combined_audio.export(output_filename, format="wav")
-    print(f"Final audiobook saved as '{output_filename}'")
-
-    # Clean up temporary files
-    print("Cleaning up temporary files...")
-    for file in temp_files:
-        os.remove(file)
-
-    print("Audio synthesis complete.")
+    print("Exporting final audiobook...")
+    final_audio.export(output_filename, format="wav")
+    print(f"Multi-voice audiobook saved as '{output_filename}'")
