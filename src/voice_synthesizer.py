@@ -10,29 +10,36 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 device = "cuda" if torch.cuda.is_available() else "cpu"
 tts_model = TTS("tts_models/en/vctk/vits").to(device)
 
-# --- UPDATED FUNCTION SIGNATURE ---
-def synthesize_multi_voice_audio(tts_model, processed_data: list[dict], output_filename: str):
-    # The rest of the function's code remains exactly the same
-    print(f"Starting multi-voice audio synthesis...")
+# Replace your old synthesizer function with this one
 
-    narrator_wav = "narrator_voice.wav"
-    character_wav = "character_voice.wav"
-
-    if not os.path.exists(narrator_wav) or not os.path.exists(character_wav):
-        raise FileNotFoundError("Make sure 'narrator_voice.wav' and 'character_voice.wav' are uploaded.")
+def synthesize_multi_voice_audio(processed_data: list[dict], output_filename: str):
+    """
+    Synthesizes audio using different built-in speakers for narration and dialogue.
+    """
+    print(f"Starting multi-speaker audio synthesis with VITS...")
+    
+    # --- NEW: Create a Voice Cast using speaker IDs ---
+    # Pick any two different speaker IDs from the list you just printed
+    VOICE_CAST = {
+        "narration": "p227",  # A standard male voice
+        "dialogue": "p232"   # A different male voice
+    }
 
     final_audio = AudioSegment.empty()
     for i, item in enumerate(processed_data):
         temp_filename = f"temp_chunk_{i}.wav"
-        speaker_ref = narrator_wav if item['type'] == 'narration' else character_wav
-        print(f"  Chunk {i+1} ({item['type']}): Synthesizing...")
-
+        
+        # --- NEW: Speaker Selection Logic ---
+        speaker_id = VOICE_CAST.get(item['type'], VOICE_CAST["narration"])
+        print(f"  Chunk {i+1} ({item['type']}): Synthesizing with speaker {speaker_id}...")
+            
+        # --- THE FIX: Use the 'speaker' argument, not 'speaker_wav' ---
         tts_model.tts_to_file(
             text=item['sentence'],
             file_path=temp_filename,
-            speaker_wav=speaker_ref,
+            speaker=speaker_id # Use the selected speaker ID
         )
-
+        
         audio_chunk = AudioSegment.from_wav(temp_filename)
         final_audio += audio_chunk
         os.remove(temp_filename)
