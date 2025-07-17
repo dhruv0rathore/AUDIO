@@ -8,7 +8,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 #print("Loading TTS model...")
 device = "cuda" if torch.cuda.is_available() else "cpu"
-tts_model = TTS("tts_models/en/ljspeech/tacotron2-DDC").to(device)
+tts_model = TTS("tts_models/en/vctk/vits").to(device)
 
 # --- UPDATED FUNCTION SIGNATURE ---
 def synthesize_multi_voice_audio(tts_model, processed_data: list[dict], output_filename: str):
