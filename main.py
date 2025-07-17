@@ -1,9 +1,9 @@
-# src/main.py
+
 from src.book_parser import parse_book
 from src.text_processor import post_process_text, tag_sentence_types
 from src.pdf_parser import structure_into_sentences
 from src.emotion_classifier import classify_emotions
-from src.voice_synthesizer import synthesize_multi_voice_audio
+from src.voice_synthesizer import synthesize_multi_voice_audio, tts_model
 
 if __name__ == "__main__":
     print("Audiobook Director AI: System Online.")
@@ -32,7 +32,7 @@ if __name__ == "__main__":
         print(f"  Emotion: {item['emotion']} (Score: {item['score']:.2f})")
         print("-" * 20)
 
-    # --- Phase 3: Audio Synthesis ---
-    synthesize_multi_voice_audio(data_to_synthesize, "output_multivoice_audiobook.wav")
-    
-    print("\n--- Project Complete ---")
+    print("\n--- Starting Phase 3: Audio Synthesis ---")
+synthesize_multi_voice_audio(tts_model, data_to_synthesize, "output_multivoice_audiobook.wav")
+
+print("\n--- Project Complete ---")
