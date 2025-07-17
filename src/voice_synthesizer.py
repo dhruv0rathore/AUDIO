@@ -12,7 +12,7 @@ tts_model = TTS("tts_models/en/vctk/vits").to(device)
 
 # Replace your old synthesizer function with this one
 
-def synthesize_multi_voice_audio(processed_data: list[dict], output_filename: str):
+def synthesize_multi_voice_audio(tts_model, processed_data: list[dict], output_filename: str):
     """
     Synthesizes audio using different built-in speakers for narration and dialogue.
     """
