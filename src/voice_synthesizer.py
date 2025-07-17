@@ -31,7 +31,6 @@ def synthesize_multi_voice_audio(tts_model, processed_data: list[dict], output_f
             text=item['sentence'],
             file_path=temp_filename,
             speaker_wav=speaker_ref,
-            language="en"
         )
 
         audio_chunk = AudioSegment.from_wav(temp_filename)
