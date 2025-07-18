@@ -2,7 +2,7 @@ from transformers import pipeline
 
 # --- IMPORTANT ---
 # Replace this with your actual Hugging Face model repository name
-MODEL_REPO_ID = "rememberme4ever/emotion-classifier-frankenstein"
+MODEL_REPO_ID = "rememberme4ever/emotion_classifier_v2"
 # ---
 
 # We initialize the pipeline here. The first time this runs, 
