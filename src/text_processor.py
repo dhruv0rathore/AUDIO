@@ -17,9 +17,13 @@ def tag_sentence_types(sentences: list[str]) -> list[dict]:
         structured_data.append({"sentence": sentence_content, "type": sentence_type})
     return structured_data
 
-# It's good practice to move this function here from pdf_parser.py
 def post_process_text(text: str) -> str:
-    print("Post-processing text...")
+    # Fix words broken by hyphenation
     text = re.sub(r"([a-zA-Z])-\s([a-zA-Z])", r"\1\2", text)
+    
+    # --- NEW: Convert long dashes to commas for a natural pause ---
+    text = re.sub(r"—|–|--", ", ", text)
+
+    # Collapse multiple whitespace characters
     text = re.sub(r'\s+', ' ', text).strip()
     return text
