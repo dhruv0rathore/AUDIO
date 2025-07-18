@@ -8,7 +8,7 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 #print("Loading TTS model...")
 device = "cuda" if torch.cuda.is_available() else "cpu"
-tts_model = TTS("tts_models/en/vctk/vits").to(device)
+tts_model = TTS("tts_models/en/styletts2/styletts2").to(device)
 
 # Replace your old synthesizer function with this one
 
