@@ -33,6 +33,6 @@ if __name__ == "__main__":
         print("-" * 20)
 
     print("\n--- Starting Phase 3: Audio Synthesis ---")
-synthesize_multi_voice_audio(tts_model, data_to_synthesize, "output_multivoice_audiobook.wav")
+synthesize_with_bark(final_data[:5], "final_bark_audiobook.wav")
 
 print("\n--- Project Complete ---")
