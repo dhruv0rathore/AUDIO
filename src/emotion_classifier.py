@@ -12,8 +12,13 @@ classifier = pipeline("text-classification", model=MODEL_REPO_ID)
 
 # The mapping from label ID to emotion name
 # This must match the order from our training dataset
-EMOTION_LABELS = ['sadness', 'joy', 'love', 'anger', 'fear', 'surprise']
-
+EMOTION_LABELS = [
+    'admiration', 'amusement', 'anger', 'annoyance', 'approval', 'caring', 
+    'confusion', 'curiosity', 'desire', 'disappointment', 'disapproval', 
+    'disgust', 'embarrassment', 'excitement', 'fear', 'gratitude', 'grief', 
+    'joy', 'love', 'nervousness', 'optimism', 'pride', 'realization', 
+    'relief', 'remorse', 'sadness', 'surprise', 'neutral'
+]
 
 def classify_emotions(typed_sentences: list[dict]) -> list[dict]:
     print(f"Classifying emotions for {len(typed_sentences)} sentences...")
