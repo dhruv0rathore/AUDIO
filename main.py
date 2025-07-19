@@ -3,8 +3,7 @@ from src.book_parser import parse_book
 from src.text_processor import post_process_text, tag_sentence_types
 from src.pdf_parser import structure_into_sentences
 from src.emotion_classifier import classify_emotions
-from src.voice_synthesizer import synthesize_multi_voice_audio, tts_model
-
+from src.voice_synthesizer import synthesize_with_bark
 if __name__ == "__main__":
     print("Audiobook Director AI: System Online.")
     book_path = "my_book.epub"
