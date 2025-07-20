@@ -4,10 +4,19 @@ from src.text_processor import post_process_text, tag_sentence_types
 from src.pdf_parser import structure_into_sentences
 from src.emotion_classifier import classify_emotions
 from src.voice_synthesizer import synthesize_with_bark
+from bark import preload_models
+import torch
+
 if __name__ == "__main__":
     print("Audiobook Director AI: System Online.")
     book_path = "my_book.epub"
+    print("Preloading Bark models...")
+    if torch.cuda.is_available():
+        preload_models(text_use_gpu=True, coarse_use_gpu=True, fine_use_gpu=True, codec_use_gpu=True)
+    else:
+        preload_models()
 
+    print("Bark models preloaded.")
     # --- Phase 1: Parsing, Cleaning, and Structuring ---
     raw_text = parse_book(book_path)
     processed_text = post_process_text(raw_text)
@@ -32,6 +41,6 @@ if __name__ == "__main__":
         print("-" * 20)
 
     print("\n--- Starting Phase 3: Audio Synthesis ---")
-synthesize_with_bark(final_data[:5], "final_bark_audiobook.wav")
+synthesize_with_bark(final_data[:10], "final_bark_audiobook.wav")
 
 print("\n--- Project Complete ---")
