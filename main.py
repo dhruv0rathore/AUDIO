@@ -3,7 +3,7 @@ from src.book_parser import parse_book
 from src.text_processor import post_process_text, tag_sentence_types
 from src.pdf_parser import structure_into_sentences
 from src.emotion_classifier import classify_emotions
-from src.voice_synthesizer import synthesize_with_bark
+from src.voice_synthesizer import synthesize_with_emotion_prompts
 from bark import preload_models
 import torch
 
@@ -41,6 +41,6 @@ if __name__ == "__main__":
         print("-" * 20)
 
     print("\n--- Starting Phase 3: Audio Synthesis ---")
-synthesize_with_bark(final_data[:10], "final_bark_audiobook.wav")
+synthesize_with_emotion_prompts(final_data[:10], "final_prompted_audiobook.wav")
 
 print("\n--- Project Complete ---")

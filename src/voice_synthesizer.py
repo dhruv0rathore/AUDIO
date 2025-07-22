@@ -2,37 +2,38 @@ from bark import SAMPLE_RATE, generate_audio
 from pydub import AudioSegment
 import numpy as np
 
-def synthesize_with_bark(processed_data: list[dict], output_filename: str):
+def synthesize_with_emotion_prompts(processed_data: list[dict], output_filename: str):
     """
-    Synthesizes audio using the OFFICIAL Bark model.
+    Synthesizes audio using Bark by prepending emotion tags as performance prompts.
     """
-    print(f"Starting audio synthesis with official Bark...")
-    
-    VOICE_CAST = {
-        "narration": "v2/en_speaker_6",
-        "dialogue": "v2/en_speaker_3"
-    }
-    final_audio = AudioSegment.empty()
+    print(f"Starting audio synthesis with Bark and emotional prompts...")
 
+    # We can use one consistent, high-quality voice preset for the entire book
+    base_voice_preset = "v2/en_speaker_6" 
+
+    final_audio = AudioSegment.empty()
     for i, item in enumerate(processed_data):
-        voice_preset = VOICE_CAST.get(item['type'], VOICE_CAST["narration"])
         sentence = item['sentence']
-        
-        # Add a text prompt for a non-speech sound for fun, Bark's specialty
-        if item['emotion'] == 'sadness' and np.random.rand() < 0.2: # 20% chance on sad lines
-            sentence = "[sighs] " + sentence
-            
-        print(f"  Chunk {i+1} ({item['type']}): Synthesizing with preset {voice_preset}...")
-        
+        emotion = item.get('emotion', 'neutral').lower() # Get emotion, default to neutral
+
+        # --- The New Prompting Logic ---
+        # We only add a prompt if the emotion is not neutral
+        if emotion != 'neutral':
+            text_to_generate = f"[{emotion}] {sentence}"
+        else:
+            text_to_generate = sentence
+
+        print(f"  Chunk {i+1} (Prompt: [{emotion}]): Synthesizing...")
+
         try:
-            # Use the official 'generate_audio' function
-            audio_array = generate_audio(sentence, history_prompt=voice_preset, silent=True)
-            
+            # Generate audio using the new text prompt
+            audio_array = generate_audio(text_to_generate, history_prompt=base_voice_preset, silent=True)
+
             # Convert to a format pydub can handle
             audio_np = (audio_array * 32767).astype(np.int16)
             audio_chunk = AudioSegment(
                 data=audio_np.tobytes(),
-                sample_width=2, # 16-bit audio
+                sample_width=2,
                 frame_rate=SAMPLE_RATE,
                 channels=1
             )
@@ -40,6 +41,6 @@ def synthesize_with_bark(processed_data: list[dict], output_filename: str):
             final_audio += AudioSegment.silent(duration=800)
         except Exception as e:
             print(f"    ERROR: Bark failed on chunk {i+1}. Skipping. Error: {e}")
-    
+
     final_audio.export(output_filename, format="wav")
     print(f"Bark audiobook saved as '{output_filename}'")
