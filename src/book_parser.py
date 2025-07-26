@@ -4,6 +4,8 @@ import ebooklib
 from ebooklib import epub
 from bs4 import BeautifulSoup
 import re
+import pdfplumber
+import mobi
 
 def _find_narrative_start(content_chunks: list[str]) -> list[str]:
     """
@@ -53,25 +55,42 @@ def _parse_epub(epub_path: str) -> str:
     return " ".join(main_content_chapters)
 
 def _parse_pdf(pdf_path: str) -> str:
-    """Helper function to parse PDF files."""
-    print(f"Parsing PDF file: {pdf_path}")
-    doc = fitz.open(pdf_path)
-    # Get all text blocks first
-    blocks = [b[4].replace('\n', ' ') for page in doc for b in page.get_text("blocks")]
-    doc.close()
-    
-    # Use the same universal start-finder to trim boilerplate
-    main_content_blocks = _find_narrative_start(blocks)
-    return " ".join(main_content_blocks)
+    """A more robust PDF parser using pdfplumber to analyze layouts."""
+    print(f"Parsing PDF with advanced layout analysis: {pdf_path}")
+    full_text = ""
+    with pdfplumber.open(pdf_path) as pdf:
+        for page in pdf.pages:
+            # Filter out text in the top 15% (headers) and bottom 10% (footers) of the page
+            main_content = page.filter(lambda obj: obj["top"] > page.height * 0.15 and obj["bottom"] < page.height * 0.90)
+            full_text += main_content.extract_text() + " "
+
+    # We can still use our start-finder on this cleaner text
+    text_chunks = [full_text] # Simplified for this example
+    main_narrative = _find_narrative_start(text_chunks)
+    return " ".join(main_narrative)
+
+def _parse_mobi(mobi_path: str) -> str:
+    """Helper function to parse MOBI/AZW3 files."""
+    print(f"Parsing MOBI file: {mobi_path}")
+    content = []
+    # The mobi library gives us the content as raw records
+    temp_dir, _ = mobi.extract(mobi_path)
+    for _, record in mobi.Mobi(temp_dir).read_records():
+         # Basic cleaning to remove HTML tags
+        cleaned_record = re.sub('<[^<]+?>', '', record)
+        content.append(cleaned_record)
+    return " ".join(content)
 
 # Master parser function - NO CHANGES NEEDED HERE
 def parse_book(file_path: str) -> str:
-    """
-    Master parser function. Detects file type and calls the appropriate parser.
-    """
-    if file_path.lower().endswith('.pdf'):
+    print(f"Parsing book: {file_path}")
+    file_ext = file_path.lower().split('.')[-1]
+
+    if file_ext == 'pdf':
         return _parse_pdf(file_path)
-    elif file_path.lower().endswith('.epub'):
+    elif file_ext == 'epub':
         return _parse_epub(file_path)
+    elif file_ext in ['mobi', 'azw3']:
+        return _parse_mobi(file_path)
     else:
-        raise ValueError(f"Unsupported file format: {file_path}")
+        raise ValueError(f"Unsupported file format: {file_ext}")

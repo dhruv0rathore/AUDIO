@@ -19,3 +19,5 @@ PyMuPDF
 EbookLib
 beautifulsoup4
 nltk
+pdfplumber
+mobi
