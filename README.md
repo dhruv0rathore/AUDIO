@@ -1,16 +1,16 @@
-# 🎧 Audiobook Director AI
+# 🎧 AUDIO
 
-**Transform any book into an emotionally expressive audiobook — powered by AI.**
+**Transform any book into an emotionally expressive audiobook**
 
-Audiobook Director AI is an end-to-end pipeline that reads an EPUB (or PDF), understands the emotional tone of every sentence, and synthesizes natural, expressive speech using [Bark](https://github.com/suno-ai/bark) — Suno's open-source text-to-audio model. The result is not a flat, monotone text-to-speech dump. It's a *directed performance*, where the AI acts as both the narrator and the director.
+AUDIO is an end-to-end pipeline that reads an EPUB (or PDF), understands the emotional tone of every sentence, and synthesizes natural, expressive speech using [Bark](https://github.com/suno-ai/bark) — Suno's open-source text-to-audio model. The result is not a flat, monotone text-to-speech dump. It's a *directed performance*, where the AI acts as both the narrator and the director.
 
 ---
 
 ## ✨ What Makes This Different
 
-Traditional TTS reads text. **Audiobook Director AI *interprets* it.**
+Traditional TTS reads text. **AUDIO *interprets* it.**
 
-| Feature | Traditional TTS | Audiobook Director AI |
+| Feature | Traditional TTS | AUDIO |
 |---|---|---|
 | Emotional awareness | ❌ None | ✅ 28 emotion classes per sentence |
 | Dialogue detection | ❌ None | ✅ Narration vs. dialogue tagging |
