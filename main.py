@@ -41,6 +41,6 @@ if __name__ == "__main__":
         print("-" * 20)
 
     print("\n--- Starting Phase 3: Audio Synthesis ---")
-synthesize_with_emotion_prompts(final_data[:10], "final_prompted_audiobook.wav")
+    synthesize_with_emotion_prompts(final_data[:10], "final_prompted_audiobook.wav")
 
-print("\n--- Project Complete ---")
+    print("\n--- Project Complete ---")

@@ -1,7 +1,6 @@
 from transformers import pipeline
 
 # --- IMPORTANT ---
-# Replace this with your actual Hugging Face model repository name
 MODEL_REPO_ID = "rememberme4ever/emotion_classifier_v2"
 # ---
 
